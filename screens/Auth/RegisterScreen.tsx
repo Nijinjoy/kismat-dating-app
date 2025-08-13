@@ -19,12 +19,12 @@ const RegisterScreen = () => {
   const [callingCode, setCallingCode] = useState("91");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const buttonBottom = useRef(new Animated.Value(20)).current; // Initial bottom position
+  const buttonBottom = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     const showSub = Keyboard.addListener("keyboardDidShow", (e) => {
       Animated.timing(buttonBottom, {
-        toValue: e.endCoordinates.height + 20, // Move above keyboard
+        toValue: e.endCoordinates.height + 20,
         duration: 200,
         useNativeDriver: false,
       }).start();
@@ -32,7 +32,7 @@ const RegisterScreen = () => {
 
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
       Animated.timing(buttonBottom, {
-        toValue: 20, // Back to bottom
+        toValue: 20,
         duration: 200,
         useNativeDriver: false,
       }).start();
@@ -64,19 +64,25 @@ const RegisterScreen = () => {
           Enter your phone number to register
         </Text>
 
+        {/* Country Code Input */}
+        <View style={styles.inputWrapper}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <CountryPicker
+              countryCode={countryCode}
+              withFlag
+              withCallingCode
+              withFilter
+              onSelect={(country) => {
+                setCountryCode(country.cca2);
+                setCallingCode(country.callingCode[0]);
+              }}
+            />
+            <Text style={styles.callingCode}>+{callingCode}</Text>
+          </View>
+        </View>
+
         {/* Phone Number Input */}
-        <View style={styles.phoneContainer}>
-          <CountryPicker
-            countryCode={countryCode}
-            withFlag
-            withCallingCode
-            withFilter
-            onSelect={(country) => {
-              setCountryCode(country.cca2);
-              setCallingCode(country.callingCode[0]);
-            }}
-          />
-          <Text style={styles.callingCode}>+{callingCode}</Text>
+        <View style={styles.inputWrapper}>
           <Ionicons
             name="call-outline"
             size={20}
@@ -84,13 +90,18 @@ const RegisterScreen = () => {
             style={{ marginRight: 5 }}
           />
           <TextInput
-            style={styles.input}
+            style={styles.textInput}
             placeholder="Phone number"
             keyboardType="phone-pad"
             value={phoneNumber}
             onChangeText={setPhoneNumber}
           />
         </View>
+        
+        <Text style={styles.paragraph}>
+          By continuing, you agree to our Terms of Service and Privacy Policy.
+          We may send you SMS notifications for verification purposes.
+        </Text>
       </KeyboardAvoidingView>
 
       {/* Floating Round Button */}
@@ -125,29 +136,30 @@ const styles = StyleSheet.create({
     color: "#777",
     marginBottom: 30,
   },
-  phoneContainer: {
+  inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 3,
-    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingVertical: 8,
+    marginBottom: 15,
   },
   callingCode: {
-    marginHorizontal: 8,
     fontSize: 16,
     color: "#333",
+    marginLeft: 8,
   },
-  input: {
+  textInput: {
     flex: 1,
     fontSize: 16,
     color: "#000",
+  },
+  paragraph: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 10,
+    textAlign: "center",
+    lineHeight: 20,
   },
   fabButton: {
     position: "absolute",
@@ -165,4 +177,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-
