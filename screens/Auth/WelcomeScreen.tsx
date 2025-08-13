@@ -37,7 +37,7 @@ const WelcomeScreen = ({ navigation }) => {
       flatListRef.current.scrollToIndex({ index: currentSlide + 1 });
       setCurrentSlide(currentSlide + 1);
     } else {
-      navigation.replace('Main');
+      navigation.replace('Register');
     }
   };
 
@@ -56,7 +56,6 @@ const WelcomeScreen = ({ navigation }) => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      {/* Skip Button (visible on first two slides) */}
       {currentSlide < 2 && (
         <TouchableOpacity 
           style={styles.skipButton} 
@@ -72,6 +71,7 @@ const WelcomeScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id.toString()}
         horizontal
         pagingEnabled
+        scrollEnabled={false} 
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.slide}>
@@ -89,7 +89,6 @@ const WelcomeScreen = ({ navigation }) => {
         viewabilityConfig={viewConfigRef}
       />
 
-      {/* Indicators */}
       <View style={styles.indicatorContainer}>
         {slides.map((_, index) => (
           <View 
@@ -102,7 +101,6 @@ const WelcomeScreen = ({ navigation }) => {
         ))}
       </View>
 
-      {/* Next/Get Started Button */}
       <TouchableOpacity 
         style={styles.button} 
         onPress={goToNext}
