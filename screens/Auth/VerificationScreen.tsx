@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Keyboard,
-  Animated,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const VerificationScreen = ({ route, navigation }) => {
   const { phone } = route.params || {};
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]); // only 4 boxes
   const inputRefs = useRef([]);
 
   const handleChange = (text, index) => {
@@ -29,60 +30,67 @@ const VerificationScreen = ({ route, navigation }) => {
 
   const handleVerify = () => {
     const code = otp.join("");
-    if (code.length < 4) {
+    if (code.length < otp.length) {
       alert("Please enter the complete OTP");
       return;
     }
     Keyboard.dismiss();
     console.log("Verifying OTP:", code);
-    // navigation.navigate("NextScreen");
+    navigation.navigate("ProfileDetails");
   };
 
+
   return (
-    <View style={styles.container}>
-      {/* Verification Icon */}
-      <Ionicons
-        name="shield-checkmark-outline"
-        size={40}
-        color="#4CAF50"
-        style={styles.icon}
-      />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.container}>
+        <Ionicons
+          name="shield-checkmark-outline"
+          size={40}
+          color="#4CAF50"
+          style={styles.icon}
+        />
 
-      {/* Title & Subtitle */}
-      <Text style={styles.title}>Enter your verification code</Text>
-      <Text style={styles.subtitle}>
-        Enter the 4-digit code sent to {phone || "your phone number"}.
-      </Text>
+        {/* Title & Subtitle */}
+        <Text style={styles.title}>Enter your verification code</Text>
+        <Text style={styles.subtitle}>
+          Enter the 4-digit code sent to {phone || "your phone number"}.
+        </Text>
 
-      {/* OTP Inputs */}
-      <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            ref={(ref) => (inputRefs.current[index] = ref)}
-            style={styles.otpInput}
-            keyboardType="number-pad"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            onKeyPress={({ nativeEvent }) => {
-              if (nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
-                inputRefs.current[index - 1].focus();
-              }
-            }}
-          />
-        ))}
+        {/* OTP Inputs */}
+        <View style={styles.otpContainer}>
+          {otp.map((digit, index) => (
+            <TextInput
+              key={index}
+              ref={(ref) => (inputRefs.current[index] = ref)}
+              style={styles.otpInput}
+              keyboardType="number-pad"
+              maxLength={1}
+              value={digit}
+              onChangeText={(text) => handleChange(text, index)}
+              onKeyPress={({ nativeEvent }) => {
+                if (
+                  nativeEvent.key === "Backspace" &&
+                  !otp[index] &&
+                  index > 0
+                ) {
+                  inputRefs.current[index - 1].focus();
+                }
+              }}
+            />
+          ))}
+        </View>
+        <TouchableOpacity
+          style={styles.fabButton}
+          onPress={handleVerify}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="arrow-forward" size={28} color="#fff" />
+        </TouchableOpacity>
       </View>
-
-      {/* Floating Round Button */}
-      <TouchableOpacity
-        style={styles.fabButton}
-        onPress={handleVerify}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="arrow-forward" size={28} color="#fff" />
-      </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -94,6 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
     padding: 20,
     paddingTop: 40,
+    justifyContent: "flex-start",
   },
   icon: {
     marginBottom: 20,
@@ -116,7 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   otpInput: {
-    width: 60,
+    width: 56,
     height: 60,
     borderWidth: 1,
     borderColor: "#ccc",
@@ -124,6 +133,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     backgroundColor: "#fff",
+    marginHorizontal: 0,
   },
   fabButton: {
     position: "absolute",
