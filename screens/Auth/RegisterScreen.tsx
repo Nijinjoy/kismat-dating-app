@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -13,8 +12,10 @@ import {
 } from "react-native";
 import CountryPicker from "react-native-country-picker-modal";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const RegisterScreen = () => {
+  const insets = useSafeAreaInsets();
   const [countryCode, setCountryCode] = useState("IN");
   const [callingCode, setCallingCode] = useState("91");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -53,33 +54,41 @@ const RegisterScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        {/* Heading */}
-        <Text style={styles.heading}>Let’s Get Started</Text>
-        <Text style={styles.subHeading}>
-          Enter your phone number to register
-        </Text>
-
-        {/* Country Code Input */}
-        <View style={styles.inputWrapper}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <CountryPicker
-              countryCode={countryCode}
-              withFlag
-              withCallingCode
-              withFilter
-              onSelect={(country) => {
-                setCountryCode(country.cca2);
-                setCallingCode(country.callingCode[0]);
-              }}
-            />
-            <Text style={styles.callingCode}>+{callingCode}</Text>
-          </View>
+        {/* Top Icon */}
+        <View style={styles.topIconWrapper}>
+          <Ionicons name="call" size={30} color="#4CAF50" />
         </View>
+
+        {/* Heading */}
+        <View style={styles.textWrapper}>
+          <Text style={styles.heading}>What’s your phone number?</Text>
+          <Text style={styles.subHeading}>
+            Enter your phone number to register
+          </Text>
+        </View>
+
+{/* Country Picker Input */}
+<View style={[styles.inputWrapper, { marginTop: 20 }]}>
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <CountryPicker
+      countryCode={countryCode}
+      withFlag
+      withCallingCode
+      withFilter
+      onSelect={(country) => {
+        setCountryCode(country.cca2);
+        setCallingCode(country.callingCode[0]);
+      }}
+    />
+    <Text style={styles.callingCode}>+{callingCode}</Text>
+  </View>
+</View>
+
 
         {/* Phone Number Input */}
         <View style={styles.inputWrapper}>
@@ -97,7 +106,8 @@ const RegisterScreen = () => {
             onChangeText={setPhoneNumber}
           />
         </View>
-        
+
+        {/* Paragraph */}
         <Text style={styles.paragraph}>
           By continuing, you agree to our Terms of Service and Privacy Policy.
           We may send you SMS notifications for verification purposes.
@@ -122,28 +132,35 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
     paddingHorizontal: 20,
   },
+  topIconWrapper: {
+    alignItems: "flex-start",
+    marginTop: 10,
+  },
+  textWrapper: {
+    alignItems: "flex-start",
+    marginTop: 10,
+  },
   heading: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "#333",
-    marginBottom: 5,
-    marginTop: 50,
+    color: "#000",
+    textAlign: "left",
   },
   subHeading: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#777",
-    marginBottom: 30,
+    fontSize: 14,
+    color: "#666",
+    textAlign: "left",
+    marginTop: 4,
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    paddingVertical: 8,
-    marginBottom: 15,
-  },
+    paddingVertical: 2,
+    marginBottom: 2,
+    marginTop: 20, // <-- space from above text
+  },  
   callingCode: {
     fontSize: 16,
     color: "#333",
