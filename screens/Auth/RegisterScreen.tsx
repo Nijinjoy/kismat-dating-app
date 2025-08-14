@@ -13,8 +13,10 @@ import {
 import CountryPicker from "react-native-country-picker-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 const RegisterScreen = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [countryCode, setCountryCode] = useState("IN");
   const [callingCode, setCallingCode] = useState("91");
@@ -51,6 +53,9 @@ const RegisterScreen = () => {
       return;
     }
     console.log(`+${callingCode} ${phoneNumber}`);
+    navigation.navigate("Verify", { 
+      phone: `+${callingCode} ${phoneNumber}` 
+    });
   };
 
   return (
