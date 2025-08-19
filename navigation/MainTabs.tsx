@@ -10,7 +10,11 @@ const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+    screenOptions={{
+      headerShown: false, // 🚀 Hide default header for all tabs
+    }}
+    >
       <Tab.Screen name="Home" component={HomeScreen} options={{
         tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />
       }} />
