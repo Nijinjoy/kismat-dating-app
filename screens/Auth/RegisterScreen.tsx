@@ -16,9 +16,9 @@ const RegisterScreen = ({ navigation }) => {
     if (!name.trim()) newErrors.name = "Full name is required";
     if (!email.includes('@')) newErrors.email = "Enter a valid email";
     if (password.length < 6) newErrors.password = "Password must be at least 6 chars";
-
+  
     setErrors(newErrors);
-
+  
     if (Object.keys(newErrors).length === 0) {
       Animated.sequence([
         Animated.timing(buttonScale, {
@@ -35,10 +35,13 @@ const RegisterScreen = ({ navigation }) => {
         })
       ]).start(() => {
         console.log('Registration attempt with:', { name, email, password });
+  
+        // ✅ Navigate after successful validation + animation
+        navigation.navigate("Notification");
       });
     }
   };
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
